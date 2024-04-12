@@ -1,0 +1,61 @@
+~'KERNAL32.DLL',
+	_ExitProcess,
+	_WriteFile,
+	_CreateFileA
+
+~'msvcrt_dll',
+	_printf,
+	_printf_s
+
+~'KERNAL32.DLL',
+	_ExitProcess
+
+
+exit (err = 0) {
+	_ExitProcess(err)
+}
+
+file (name = "", mode = '') {
+	$.size = 0
+	
+	$.handle = 0
+	$.imode = 0
+	if mode.contains("r")
+		$.imode |= GENERIC_READ
+	if mode.contains("w")
+		$.imode |= GENERIC_WRITE
+	if mode.contains("e")
+		$.imode |= GENERIC_EXECUTE
+	
+	if(_x64) {
+		
+	} else {
+		$.read () {
+			buffer = ''
+			_ReadFile($.handle, buffer, $.size, 0, 0)
+			return buffer
+		}
+		$.write (buffer) {
+			if (buffer.size == 0)
+				return 0
+			if _WriteFile($.handle, buffer, $.size, 0, 0)
+				return $.size
+			else
+				return 0
+		}
+	}
+	
+	if(_x64) {
+		$.handle = _CreateFileW()
+	} else {
+		$.handle = _CreateFileA($.name, $.imode, FILE_SHARE_READ, 0, OPEN_EXISTING, 0)
+		if ($.handle == INVALID_HANDLE_VALUE)
+			return {}
+		
+		$.size = _GetFileSize($.handle, 0)
+		if (size == INVALID_FILE_SIZE)
+			return {}
+		
+		return $
+	}
+}

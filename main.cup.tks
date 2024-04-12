@@ -1,0 +1,15 @@
+IMPORT windows
+
+SIZE 2
+main() {
+
+SIZE 1
+std . println ( "Hello world" ) 
+}
+
+RETURN main
+
+VALUE main
+VALUE std
+VALUE println
+VALUE main

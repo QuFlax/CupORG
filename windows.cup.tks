@@ -1,0 +1,88 @@
+DEPENDENCY KERNAL32.DLL _ExitProcess
+DEPENDENCY KERNAL32.DLL _WriteFile
+DEPENDENCY KERNAL32.DLL _CreateFileA
+DEPENDENCY msvcrt_dll _printf
+DEPENDENCY msvcrt_dll _printf_s
+{
+exit ( err = 0 ) _ExitProcess ( err ) 
+file ( name = "" , mode = "" ) {
+this . size = 0
+this . handle = 0
+this . imode = 0
+IF SIZE 1
+mode . contains ( "r" ) 
+this . imode |= GENERIC_READ
+IF SIZE 1
+mode . contains ( "w" ) 
+this . imode |= GENERIC_WRITE
+IF SIZE 1
+mode . contains ( exit ) 
+this . imode |= GENERIC_EXECUTE
+IF SIZE 2
+_x64
+{ ... }
+ELSE
+{
+this . read (  ) {
+buffer = ""
+_ReadFile ( this . handle , buffer , this . size , 0 , 0 ) 
+RETURN buffer
+}
+this . write ( buffer ) {
+IF SIZE 1
+buffer . size == 0
+RETURN 0
+IF SIZE 2
+_WriteFile ( this . handle , buffer , this . size , 0 , 0 ) 
+RETURN this . size
+ELSE
+RETURN 0
+}
+}
+IF SIZE 2
+_x64
+this . handle = _CreateFileW (  ) 
+ELSE
+{
+this . handle = _CreateFileA ( this . name , this . imode , FILE_SHARE_READ , 0 , OPEN_EXISTING , 0 ) 
+IF SIZE 1
+this . handle == INVALID_HANDLE_VALUE
+RETURN {}
+this . size = _GetFileSize ( this . handle , 0 ) 
+IF SIZE 1
+size == INVALID_FILE_SIZE
+RETURN {}
+RETURN this
+}
+}
+}
+VALUE ID exit
+VALUE ID err
+VALUE 0
+VALUE ID _ExitProcess
+VALUE ID file
+VALUE ID name
+VALUE ""
+VALUE ID mode
+VALUE ID size
+VALUE ID handle
+VALUE ID imode
+VALUE ID contains
+VALUE "r"
+VALUE ID GENERIC_READ
+VALUE "w"
+VALUE ID GENERIC_WRITE
+VALUE ID GENERIC_EXECUTE
+VALUE ID _x64
+VALUE ID read
+VALUE ID buffer
+VALUE ID _ReadFile
+VALUE ID write
+VALUE ID _WriteFile
+VALUE ID _CreateFileW
+VALUE ID _CreateFileA
+VALUE ID FILE_SHARE_READ
+VALUE ID OPEN_EXISTING
+VALUE ID INVALID_HANDLE_VALUE
+VALUE ID _GetFileSize
+VALUE ID INVALID_FILE_SIZE

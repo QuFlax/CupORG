@@ -1,0 +1,7 @@
+#windows
+
+main() {
+	windows.println("Hello world")
+}
+
+return main
